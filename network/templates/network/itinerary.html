@@ -1,0 +1,264 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}GoWhereSG{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+        <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDiIF65mBCBSMQ7rFXNW7SjpoWNZXVRPA&libraries=places&callback=initMap">
+</script>
+
+<style>
+
+    /*.dropbtn {
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}*/
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+/* .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+    </style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">GoWhereSG</a>
+
+            <div>
+              <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                    </li>
+                {% endif %}
+                 <li class="nav-item">
+                  <a class="nav-link" href="{% url 'index' %}">Get Started</a>
+                </li>
+                <li class="nav-item">
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'category' 'PRODUCTIVITY' %}">Productivity</a>
+                  </li>
+                  <li class="nav-item">
+                  <a class="nav-link" href="{% url 'category' 'LEISURE' %}">Leisure</a>
+                  </li>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown">
+                      <a class="nav-link" href="{% url 'youritineraries' %}">Your Itinerary
+                              <div class="dropdown-content">
+                                <a  href="{% url 'recentlyaddeditems' %}">Recently Added Items</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL PRODUCTIVITY' %}">Productivity</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL LEISURE' %}">Leisure</a>
+                              </div>
+                      </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'maps' %}">Maps</a>
+                </li>
+                {% if user.username == superuser.username %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'createactivities' %}">Create Activities</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+          </nav>
+
+<div class="jumbotron text-center">
+        <!-- Title -->
+        <h2 class="card-title h2">YOUR ITINERARY</h2>
+        <!-- Subtitle -->
+        <p class="black-text my-4 font-weight-bold">This is your itinerary for {{typeofactivity}} category</p>
+        <p class="black-text my-4">You can create your own activities.</p>
+        <br>
+        <button type="button" class="btn btn-info" id="newactivity">Create Activity(+)</button>
+
+
+<div id="create-view">
+    <h3>New Activity</h3>
+    <form id="create-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <input id="create-title" class="form-control" placeholder="What is the title of the activity?">
+        </div>
+        <div class="form-group">
+            <select id="create-category" class="form-control" placeholder="Category" required>
+                            <option value="">Choose a Category</option>
+                            <option value="personal productivity">Personal Productivity</option>
+                            <option value="personal leisure">Personal Leisure</option>
+
+            </select>
+        </div>
+        <div class="form-group">
+            <textarea id="create-content" class="form-control" placeholder="Description of activity"></textarea>
+        </div>
+        <div class="form-group">
+            <input id="create-cost" class="form-control" placeholder="Estimated cost of activity">
+        </div>
+        <div class="form-group">
+            <div class='input-group date' id='datetimepicker1'>
+              <input type='text' id="create-date" name="date" class="form-control" value="{{activity.activity_datetime}}" placeholder="Date and Time">
+              <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+        </div>
+        <input type="submit" class="btn btn-block btn-primary"/>
+      </div>
+    </form>
+</div>
+<br>
+          <div class="row d-flex justify-content-center">
+
+            <!-- Grid column -->
+            <div class="col-xl-7 pb-2">
+                    {% for activity in activities %}
+                        <br>
+                        <!-- Card Regular -->
+
+                        <div class="card card-cascade" >
+                            <!-- Card content -->
+
+                            <div class="card-body card-body-cascade text-center">
+                                <!-- Title -->
+                                <a href="{% url 'view_activity' activity.id %}"><h4 class="card-title"><strong>{{activity.activity_title}}</strong></h4></a>
+                                <!-- Subtitle -->
+                                <h6 class="font-weight-bold indigo-text py-2">{{activity.category}}</h6>
+                                <!-- Text -->
+                                <br>
+                                <h7>Description: {{activity.activity_description}}</h7>
+                                <!-- Price -->
+                                <br>
+                                <br>
+                                <h6>Estimated cost:<h6 class="font-weight-bold"> SGD {{activity.estimatedcost}} <br> </h6></h6>
+                                <!-- Button -->
+                                <br>
+                                <h4>When: {{activity.activity_datetime}}</h4>
+
+                                <br>
+                                <a href="{% url 'view_activitysecond' activity.id %}" class="btn btn-primary">View</a>
+
+                            </div>
+                            <!-- Card footer -->
+                            <div class="card-footer text-muted text-center">
+                                {{activity.timestamp}}
+                            </div>
+                        </div>
+
+                        <!-- Card Regular -->
+                    {% endfor %}
+
+
+            </div>
+        </div>
+        <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if activities.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ activities.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+      {% endif %}
+
+
+      {% for n in activities.paginator.page_range %}
+        {% if activities.number == n %}
+            <li class="page-item active"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if activities.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ allposts.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+
+
+    </div>
+
+</div>
+</body>
+
+<script>
+
+
+$('#datetimepicker1').datetimepicker({
+   // dateFormat: 'dd-mm-yy',
+   format:'dddd DD MMMM YYYY hh:mm A',
+    //minDate: getFormattedDate(new Date())
+});
+
+//function getFormattedDate(date) {
+    //var day = date.getDate();
+    //var month = date.getMonth() + 1;
+    //var year = date.getFullYear().toString().slice(2);
+    //return day + '-' + month + '-' + year;
+//}
+
+//$(function() {
+ // $('#datetimepicker1').datetimepicker();
+//});
+</script>
+<script src="{% static 'network/network.js' %}"></script>
+</html>

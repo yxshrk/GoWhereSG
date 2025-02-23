@@ -1,0 +1,217 @@
+#map {
+  height: 100%;
+}
+
+/* Optional: Makes the sample page fill the window. */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#description {
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+}
+
+#infowindow-content .title {
+  font-weight: bold;
+}
+
+#infowindow-content {
+  display: none;
+}
+
+#map #infowindow-content {
+  display: inline;
+}
+
+.pac-card {
+  margin: 10px 10px 0 0;
+  border-radius: 2px 0 0 2px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  background-color: #fff;
+  font-family: Roboto;
+}
+
+#pac-container {
+  padding-bottom: 12px;
+  margin-right: 12px;
+}
+
+.pac-controls {
+  display: inline-block;
+  padding: 5px 11px;
+}
+
+.pac-controls label {
+  font-family: Roboto;
+  font-size: 13px;
+  font-weight: 300;
+}
+
+#pac-input {
+  background-color: #fff;
+  font-family: Roboto;
+  font-size: 15px;
+  font-weight: 300;
+  margin-left: 12px;
+  padding: 0 11px 0 13px;
+  text-overflow: ellipsis;
+  width: 400px;
+}
+
+#pac-input:focus {
+  border-color: #4d90fe;
+}
+
+#title {
+  color: #fff;
+  background-color: #4d90fe;
+  font-size: 25px;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+#target {
+  width: 345px;
+}
+
+
+
+body, *{
+    padding:0px;
+    margin:0px;
+    box-sizing: border-box;
+}
+.calendar
+{
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
+}
+
+.calendar .dropdown
+{
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    color: #1caff6;
+    text-align: center;
+    font-size: 14pt;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 30px;
+    padding-right: 30px;
+    width: 160px;
+    left: 0px;
+    z-index: 2000;
+}
+
+.calendar .dropdown .dropdown-item
+{
+    cursor:pointer;
+    opacity: .7;
+    transition: .5s opacity;
+}
+
+.calendar .dropdown .dropdown-item:hover
+{
+    opacity: 1;
+}
+
+.calendar .years
+{
+    display:none;
+}
+
+.calendar .title
+{
+    text-align:center;
+    font-size:20pt;
+}
+
+.calendar .calendar-btn
+{
+    float: left;
+    background-color: #24aeff;
+    color: white;
+    text-align: center;
+    font-size: 14pt;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    position: relative;
+    width: 20%;
+    cursor: pointer;
+    transition: .5s background-color;
+}
+
+.calendar .calendar-btn:hover{
+    background-color:#1f71a1;
+}
+
+.calendar .year-btn
+{
+    float:right;
+}
+
+.calendar .calendar-dates .days .day
+{
+    float:left;
+    width: 12%;
+    margin: 1%;
+    padding: 1%;
+    font-size:13pt;
+    text-align:center;
+    border-radius: 10px;
+    border: solid 1px #ddd;
+}
+
+.calendar .calendar-dates .days .day.blank
+{
+    background-color: white;
+    border:none;
+}
+
+.calendar .calendar-dates .days .day.selected
+{
+    background-color: #1caff6;
+    color: white;
+    cursor:pointer;
+    opacity: .5;
+    transition: .5s opacity;
+}
+
+.calendar .calendar-dates .days .day.selected:hover
+{
+    opacity: 1;
+}
+
+.calendar .calendar-dates .days .day.label
+{
+    height: 40px;
+    background-color: white;
+    color: black;
+    border:none;
+    font-weight:bold;
+}
+
+.clear{
+    clear:both;
+}
+
+@media only screen and (max-width: 960px) {
+    .calendar{
+        width: 100%;
+        margin: 0px;
+        margin: 0px;
+        box-sizing: border-box;
+        position: relative;
+        left: 0px;
+    }
+}

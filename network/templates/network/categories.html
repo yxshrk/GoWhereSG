@@ -1,0 +1,31 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <br>
+    <!-- Jumbotron -->
+    <div class="jumbotron text-center mx-2 mb-5">
+
+        <!-- Title -->
+        <h2 class="card-title h2">ACTIVITY CATEGORIES</h2>
+        <!-- Subtitle -->
+        <p class="my-4 h6">Which way explorer? Productivity or Leisurrree?</p>
+        <br> <br>
+        <img src="https://handluggageonly.co.uk/wp-content/uploads/2015/07/Hand-Luggage-Only-23.jpg" alt="indeximage" style="height: 579px;width: 860px;display: block;margin-left: auto;margin-right: auto;" class="embed-responsive"> <br> <br> <br>
+        <!-- Grid row -->
+        <div class="row d-flex justify-content-center">
+            <!-- Grid column -->
+            <div class="col-xl-7 pb-2">
+                <ul class="list-group">
+                    <a href="{% url 'category' 'PRODUCTIVITY' %}"><li class="list-group-item"><h4>Productivity</h4></li></a>
+                    <br>
+                    <h4><strong>OR</strong></h4>
+                    <br>
+                    <a href="{% url 'category' 'LEISURE' %}"><li class="list-group-item"><h4>Leisure</h4></li></a>
+                </ul>
+            </div>
+            <!-- Grid column -->
+        </div>
+        <!-- Grid row -->
+    </div>
+    <!-- Jumbotron -->
+{% endblock %}

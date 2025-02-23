@@ -1,0 +1,78 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<button type="button" class="btn btn-info" id="newactivity">Create Activity(+)</button>
+
+
+<div id="create-view">
+    <h3>New Activity</h3>
+    <form id="create-form">
+        {% csrf_token %}
+        <div class="form-group">
+            <input id="create-title" class="form-control" placeholder="What is the title of the activity?">
+        </div>
+        <div class="form-group">
+            <select id="create-category" class="form-control" placeholder="Category" required>
+                            <option value="">Choose a Category</option>
+                            <option value="productivity">Productivity</option>
+                            <option value="leisure">Leisure</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <textarea id="create-content" class="form-control" placeholder="Description of activity"></textarea>
+        </div>
+        <div class="form-group">
+            <input id="create-cost" class="form-control" placeholder="$Estimated cost of activity">
+        </div>
+        <div class="form-group">
+            <div class='input-group date' id='datetimepicker1'>
+              <input type='text' id="create-date" class="form-control" placeholder="Date and Time">
+              <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+        </div>
+        <input type="submit" class="btn btn-block btn-primary"/>
+      </div>
+    </form>
+</div>
+
+
+{% for activity in activities %}
+
+                        <!-- Card Regular -->
+                        <div class="card card-cascade" >
+                            <!-- Card image -->
+                            <div class="view view-cascade overlay">
+                                <a>
+                                    <div class="mask rgba-white-slight"></div>
+                                </a>
+                            </div>
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <!-- Title -->
+                                <h4 class="card-title"><strong>{{activity.activity_title}}</strong></h4>
+                                <!-- Subtitle -->
+                                <h6 class="font-weight-bold">{{activity.category}}</h6>
+                                <br>
+                                <p>{{activity.activity_description}}</p>
+                                <!-- Text -->
+                                <!-- Text -->
+                                <p class="">SGD {{activity.estimatedcost}} <br> </p>
+                                <!-- Price -->
+                                <p class="font-weight-bold">{{activity.activity_datetime}} <br> </p>
+
+                                 <a href="{% url 'view_activity' activity.id %}" class="btn btn-primary">View</a>
+                            </div>
+                            <!-- Card footer -->
+
+                            <div class="card-footer text-center">
+                                {{activity.timestamp}}
+                            </div>
+                        </div>
+                        <!-- Card Regular -->
+                    {% endfor %}
+
+
+{% endblock %}

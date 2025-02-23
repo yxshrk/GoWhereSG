@@ -1,0 +1,91 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<br>
+    <!-- Jumbotron -->
+    <div class="jumbotron text-center">
+        <!-- Title -->
+        <h2 class="card-title h2">ACTIVITY BOARD</h2>
+        <!-- Subtitle -->
+        <p class="black-text my-4 font-weight-bold">These are the Activities that we PERSONALLY recommend for your selection in the {{categ}} category.</p>
+        <p class="black-text my-4 font-weight-bold">Once you remove an activity from your recently added list, it disappears from here as well.</p>
+        <p>We will update it every few days.</p>
+        <br>
+        <p class="black-text my-4">You can add your own activities under the itinerary section.</p>
+        <br>
+        <!-- Grid row -->
+
+            <div class="row d-flex justify-content-center">
+
+            <!-- Grid column -->
+            <div class="col-xl-7 pb-2">
+                    {% for activity in activities %}
+                        <br>
+                        <!-- Card Regular -->
+
+                        <div class="card card-cascade" >
+                            <!-- Card content -->
+
+                            <div class="card-body card-body-cascade text-center">
+                                <!-- Title -->
+                                <a href="{% url 'view_activity' activity.id %}"><h4 class="card-title"><strong>{{activity.activity_title}}</strong></h4></a>
+                                <!-- Subtitle -->
+                                <h6 class="font-weight-bold indigo-text py-2">{{activity.category}}</h6>
+                                <!-- Text -->
+                                <h5>Description: {{activity.activity_description}}</h5>
+                                <!-- Price -->
+                                <br>
+                                <h5>Estimated cost:<h4 class="font-weight-bold"> SGD {{activity.estimatedcost}} <br> </h4></h5>
+                                <!-- Button -->
+                                <br>
+                                <p>When: {{activity.activity_datetime}}</p>
+
+                                <br>
+                                 <a href="{% url 'view_activity' activity.id %}" class="btn btn-primary">View</a>
+
+                            </div>
+
+                            <!-- Card footer -->
+                            <div class="card-footer text-muted text-center">
+                                {{activity.timestamp}}
+                            </div>
+                        </div>
+
+                        <!-- Card Regular -->
+                    {% endfor %}
+            </div>
+        </div>
+
+         <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if activities.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ activities.previous_page_number }}">Previous</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+      {% endif %}
+
+
+      {% for n in activities.paginator.page_range %}
+        {% if activities.number == n %}
+            <li class="page-item active"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{n}}">{{n}}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if activities.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ allposts.next_page_number }}">Next</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><a class="page-link" href="#">Next</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+    </div>
+
+
+    <!-- Jumbotron -->
+{% endblock %}

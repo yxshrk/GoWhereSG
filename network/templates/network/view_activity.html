@@ -1,0 +1,327 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}GoWhereSG{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.15.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/css/bootstrap-datetimepicker.min.css">
+        <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDiIF65mBCBSMQ7rFXNW7SjpoWNZXVRPA&libraries=places&callback=initMap">
+</script>
+
+<style>
+    .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+</style>
+    </head>
+    <body>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">GoWhereSG</a>
+
+            <div>
+              <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                    </li>
+                {% endif %}
+                 <li class="nav-item">
+                  <a class="nav-link" href="{% url 'index' %}">Get Started</a>
+                </li>
+                <li class="nav-item">
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'category' 'PRODUCTIVITY' %}">Productivity</a>
+                  </li>
+                  <li class="nav-item">
+                  <a class="nav-link" href="{% url 'category' 'LEISURE' %}">Leisure</a>
+                  </li>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown">
+                      <a class="nav-link" href="{% url 'youritineraries' %}">Your Itinerary
+                              <div class="dropdown-content">
+                                <a  href="{% url 'recentlyaddeditems' %}">Recently Added Items</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL PRODUCTIVITY' %}">Productivity</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL LEISURE' %}">Leisure</a>
+                              </div>
+                      </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'maps' %}">Maps</a>
+                </li>
+                {% if user.username == superuser.username %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'createactivities' %}">Create Activities</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+          </nav>
+          <br>
+          <br>
+          <br>
+
+
+<img src="{{activity.link}}" class="card-img-top" alt="indeximage" style="height:300px;width:400px;border-radius:20%;margin-left:auto;margin-right:auto;display: block;" class="embed-responsive">
+                        <!-- Card Regular -->
+                        <br>
+                        <br>
+                    <div id="content-view">
+
+                        <div class="card card-cascade" >
+                            <!-- Card image -->
+                            <div class="view view-cascade overlay">
+                                <a>
+                                    <div class="mask rgba-white-slight"></div>
+                                </a>
+                            </div>
+                            <!-- Card content -->
+                            <div class="card-body card-body-cascade text-center">
+                                <!-- Title -->
+                                <h4 class="card-title"><strong>{{activity.activity_title}}</strong></h4>
+                                <!-- Subtitle -->
+                                <br>
+                                <br>
+                                <h6 class="font-weight-bold">{{activity.category}}</h6>
+                                <br>
+                                <p>Description: {{activity.activity_description}}</p>
+                                <!-- Text -->
+                                <!-- Text -->
+                                <p class="">Estimated Cost: SGD {{activity.estimatedcost}} <br> </p>
+                                <!-- Price -->
+                                <p class="font-weight-bold">When is this activity: {{activity.activity_datetime}} <br> </p>
+                                <br>
+                                <br>
+                                  {% if added %}
+                <a href="{% url 'addtoitinerary' activity.id %}">
+                        <button type="button" class="btn btn-danger" id="removebutton">Remove from Itinerary</button>
+                </a>
+                {% else %}
+                    <a href="{% url 'addtoitinerary' activity.id %}">
+                        <button type="button" class="btn btn-success" id="addbutton">Add to Itinerary</button>
+                    </a>
+                {% endif %}
+                <br>
+                <br>
+                            </div>
+                            <!-- Card footer -->
+                            <div class="card-footer text-center">
+                                {{activity.timestamp}}
+                            </div>
+                        </div>
+                </div>
+                        <!-- Card Regular -->
+                        <br>
+                        <br>
+
+
+{% if user.username == superuser.username %}
+<button type="button" style="margin-left:48%;margin-right:50%;font-size:20px;"class="btn btn-info" id="edit-button">Edit</button>
+{% endif %}
+
+<br>
+<br>
+
+<div id="edit-view">
+    <form action="{% url 'editactivity' activity.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <h4 style="text-align:center;"><strong>Activity</h4></strong> <input id="edit-title" name="title" class="form-control" value="{{activity.activity_title}}" placeholder="What is the title of the activity?">
+        </div>
+        <br>
+        <div class="form-group">
+            <h4 style="text-align:center;"><strong>Category</h4></strong>
+            <select id="edit-category" class="form-control" placeholder="Category" style="text-align:center;" name="category" value="{{activity.category}}"required>
+                            <option value="{{activity.category}}" style="text-align:center;" name="category">{{activity.category}}</option>
+                            <option value="personal productvitiy" style="text-align:center;">Personal Productivity</option>
+                            <option value="personal leisure" style="text-align:center;"> Personal Leisure</option>
+            </select>
+        </div>
+        <br>
+        <div class="form-group">
+            <h4 style="text-align:center;"><strong>Description</h4></strong>
+            <textarea id="edit-content" class="form-control" name="description" value="{{activity.activity_description}}"  placeholder="Description of activity">{{activity.activity_description}}</textarea>
+        </div>
+        <br>
+        <div class="edit-group">
+            <h4 style="text-align:center;"><strong>Estimated Cost</h4></strong>
+            <input id="edit-cost" class="form-control" name="cost" value="{{activity.estimatedcost}}" placeholder="Estimated cost of activity">
+        </div>
+        <br>
+        <div class="form-group">
+            <h4 style="text-align:center;"><strong>Date and Time of Activity</h4></strong>
+            <div class='input-group date' id='datetimepicker1'>
+              <input type='text' id="create-date" name="date" class="form-control" value="{{activity.activity_datetime}}" placeholder="Date and Time">
+              <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+              </span>
+        </div>
+        <div class="form-group">
+            <input id="edit-id" name="activityid" class="form-control" style="opacity:0.0;" value="{{activity.id}}">
+        </div>
+        <br>
+        <input type="submit" class="btn btn-block btn-primary"/>
+      </div>
+    </form>
+</div>
+
+<br>
+<br>
+
+
+
+
+        <h3 style="text-align:center;"><strong>Remarks Section</strong></h3>
+
+<br>
+<br>
+        {% for remark in remarks %}
+        <div class="card text">
+            <div class="card-body">
+                <p style="text-align:center">{{ remark.content}}</p>
+                <p style="font-size: 10px;text-align:center;">Posted on {{remark.timestamp}}</p>
+            </div>
+        </div>
+  {% endfor %}
+
+
+
+
+<p align="justify"><strong>You can add remarks down below.</strong></p>
+    <form action="{% url 'addremark' activity.id %}" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" type="text" name="remark" placeholder="Add a remark"></textarea>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-primary" type="submit">
+        </div>
+    </form>
+
+
+ <script>
+
+
+$('#datetimepicker1').datetimepicker({
+   // dateFormat: 'dd-mm-yy',
+   format:'dddd DD MMMM YYYY hh:mm A',
+    //minDate: getFormattedDate(new Date())
+});
+
+//function getFormattedDate(date) {
+    //var day = date.getDate();
+    //var month = date.getMonth() + 1;
+    //var year = date.getFullYear().toString().slice(2);
+    //return day + '-' + month + '-' + year;
+//}
+
+//$(function() {
+ // $('#datetimepicker1').datetimepicker();
+//});
+</script>
+<script>
+
+
+    defaultview();
+
+    document.querySelector('#edit-button').addEventListener('click', function() {
+        if (document.querySelector('#edit-view').style.display === 'none') {
+        document.querySelector('#edit-view').style.display = 'block';
+        } else {
+            document.querySelector('#edit-view').style.display = 'none';
+        }
+    });
+
+
+
+    //document.querySelector('form').onsubmit = edit_activity;
+
+
+
+  function defaultview() {
+      document.querySelector('#edit-view').style.display = 'none';
+  }
+
+  function edit_activity() {
+
+  const title = document.querySelector('#edit-title').value;
+  const content = document.querySelector('#edit-content').value;
+  const category = document.querySelector('#edit-category').value;
+  const cost = document.querySelector('#edit-cost').value;
+  const date = document.querySelector('#edit-date').value;
+  const numb = document.querySelector('#edit-id').value;
+
+  fetch('/editactivity', {
+    method: 'POST',
+    body: JSON.stringify({
+      title: title,
+      content: content,
+      category: category,
+      cost: cost,
+      date: date,
+      numb: numb
+    })
+  })
+  .then(response => response.json())
+  .then(result => {
+    console.log(result);
+  });
+  localStorage.clear();
+
+}
+</script>
+
+<script src="{% static 'network/network.js' %}"></script>
+</html>
+
+

@@ -1,0 +1,328 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}GoWhereSG{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <link href="{% static 'network/styles.css' %}" rel="stylesheet">
+
+
+    <title>Places Search Box</title>
+    <style>
+    #lmao{
+                text-align: center;
+                margin-top: 100px;
+            }
+
+    .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 50%;
+        width: 50%;
+        margin-right: auto;
+        margin-left: auto;
+
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #description {
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+      }
+
+      #infowindow-content .title {
+        font-weight: bold;
+      }
+
+      #infowindow-content {
+        display: none;
+      }
+
+      #map #infowindow-content {
+        display: inline;
+      }
+
+      .pac-card {
+        margin: 10px 10px 0 0;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        box-sizing: border-box;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        background-color: #fff;
+        font-family: Roboto;
+      }
+
+      #pac-container {
+        padding-bottom: 12px;
+        margin-right: 12px;
+      }
+
+      .pac-controls {
+        display: inline-block;
+        padding: 5px 11px;
+      }
+
+      .pac-controls label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+      }
+
+      #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 400px;
+      }
+
+      #pac-input:focus {
+        border-color: #4d90fe;
+      }
+
+      #title {
+        color: #fff;
+        background-color: #4d90fe;
+        font-size: 25px;
+        font-weight: 500;
+        padding: 6px 12px;
+      }
+      #target {
+        width: 345px;
+      }
+    </style>
+  </head>
+  <body>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">GoWhereSG</a>
+            <div>
+              <ul class="navbar-nav mr-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                    </li>
+                {% endif %}
+                 <li class="nav-item">
+                  <a class="nav-link" href="{% url 'index' %}">Get Started</a>
+                </li>
+                <li class="nav-item">
+                  <li class="nav-item">
+                      <a class="nav-link" href="{% url 'category' 'PRODUCTIVITY' %}">Productivity</a>
+                  </li>
+                  <li class="nav-item">
+                  <a class="nav-link" href="{% url 'category' 'LEISURE' %}">Leisure</a>
+                  </li>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown">
+                      <a class="nav-link" href="{% url 'youritineraries' %}">Your Itinerary
+                              <div class="dropdown-content">
+                                <a  href="{% url 'recentlyaddeditems' %}">Recently Added Items</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL PRODUCTIVITY' %}">Productivity</a>
+                                <a href="{% url 'youritinerary' 'PERSONAL LEISURE' %}">Leisure</a>
+                              </div>
+                      </a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'maps' %}">Maps</a>
+                </li>
+                {% if user.username == superuser.username %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'createactivities' %}">Create Activities</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
+              </ul>
+            </div>
+      </nav>
+
+    <div class="jumbotron text-center">
+        <!-- Title -->
+        <h2 class="card-title h2">MAPS PAGE</h2>
+        <!-- Subtitle -->
+        <p class="black-text my-4 font-weight-bold">Find important locations using the embedded dynamic map.</p>
+        <br>
+        <p class="black-text">You can also use the search Bars to book tickets for activities.</p>
+    </div>
+
+    <div style="text-align:center;">
+      <h2 class="black-text font-weight-bold">Movie Search Bar</h2>
+      <form action="https://google.com/search">
+        <div style="margin-top:30px;margin-right:20px;">
+          <input style="text-align:center;width:400px;" type="text" name="q" placeholder="Type Movie Title or Search for Movies">
+          <br>
+          <br>
+          <input type="submit" name="btnK" value="Find Showtimes" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+
+
+
+
+    <br>
+    <br>
+    <br>
+
+    <div style="text-align:center;">
+      <h2 class="black-text font-weight-bold">Sentosa Tickets</h2>
+      <form action="https://www.sentosa.com.sg/en/things-to-do/attractions/">
+        <div style="margin-top:30px;margin-right:20px;">
+          <input type="submit" name="btnK" value="Explore" class="btn btn-primary">
+        </div>
+      </form>
+    </div>
+
+
+
+    <br>
+    <br>
+
+
+    <h2 style="text-align:center;" class="black-text font-weight-bold">Embedded Dynamic Map</h2>
+    <p style="text-align:center;">Find important venues through this map, powered by Google.</p>
+    <br>
+    <br>
+    <form name="find_location">
+    <input style="height:30px;" id="pac-input" class="controls" type="text" value="{{post}}" placeholder="Search Box">
+    </form>
+    <div id="map"></div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <div></div>
+    <script>
+      // This example adds a search box to a map, using the Google Place Autocomplete
+      // feature. People can enter geographical searches. The search box will return a
+      // pick list containing a mix of places and predicted search terms.
+
+      // This example requires the Places library. Include the libraries=places
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+      function initAutocomplete() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 1.3521, lng: 103.8198},
+          zoom: 10,
+          mapTypeId: 'roadmap'
+        });
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+      }
+
+
+
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbGtoJOA-2b24eHYdATxUzgxheUL7vG80&libraries=places&callback=initAutocomplete"
+         async defer></script>
+  </body>
+</html>
