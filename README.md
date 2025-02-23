@@ -30,3 +30,4 @@ adding their own remarks.
 Network.js is a javascript file that contains the code required to asynchronously load forms and post data to update the activities database. Javascript is also contained in the html files with functions such as the
 datetimepicker and asynchronous toggling of forms being implemented. The maps html page uses javascript to load the map with an API and provide an input to the map when the user is searching for a place using the search box.
 The application is mobile responsive as well due to the css styling of the elements on the pages.
+
